@@ -1,0 +1,96 @@
+﻿<!--
+Faux, Copyright (C) 2012 Ray Wallace
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation version 2 of the Licens.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<UserControl x:Class="Project.TypeEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:src="clr-namespace:Project"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="New" Executed="ExecuteAdd" />
+    </UserControl.CommandBindings>
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Width" Value="80" />
+            <Setter Property="DockPanel.Dock" Value="Left" />
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="DockPanel.Dock" Value="Left" />
+        </Style>
+        <Style TargetType="DockPanel">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </UserControl.Resources>
+    <StackPanel>
+        <Image Source="{Binding IconImage}" Height="64" Width="64" HorizontalAlignment="Left" Margin="7" />
+        <!-- Name -->
+        <DockPanel>
+            <TextBlock Text="Name" />
+            <TextBox Text="{Binding Name}">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Builtin}" Value="true">
+                                <Setter Property="IsReadOnly" Value="True" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+        </DockPanel>
+        <!-- Pattern -->
+        <DockPanel>
+            <TextBlock Text="Pattern" />
+            <TextBox Text="{Binding Pattern}" />
+        </DockPanel>
+        <!-- Launcher -->
+        <DockPanel>
+            <TextBlock Text="Launcher" />
+            <src:FileTextBox Text="{Binding Launcher}" />
+        </DockPanel>
+        <!-- Launcher Arguments -->
+        <DockPanel>
+            <TextBlock Text="Arguments" />
+            <Button Content="?" FontWeight="Black" Width="22" DockPanel.Dock="Right" Click="OnArgQuestionClicked" />
+            <TextBox Text="{Binding LauncherArgs}" />
+            
+            <DockPanel.ToolTip>
+                <ToolTip Name="argsToolTip" StaysOpen="True">
+                    <TextBlock Name="argsHelp" />
+                </ToolTip>
+            </DockPanel.ToolTip>
+        </DockPanel>
+        <!-- IconPath -->
+        <DockPanel>
+            <TextBlock Text="Alt. Icon" />
+            <src:FileTextBox Text="{Binding IconPath}" />
+        </DockPanel>
+        <!-- Secondary Launchers -->
+        <!--<DockPanel>
+            <TextBlock Text="Other Launchers" Margin="3,3,3,0" DockPanel.Dock="Top" />
+            <StackPanel Orientation="Horizontal"  DockPanel.Dock="Top">
+                <Button Content="Add" Command="New" Width="80" Margin="3" />
+                <Button Content="Remove" Command="Delete" Width="80" Margin="3" />
+            </StackPanel>
+            <ComboBox Name="launchers" ItemsSource="{Binding Launchers}" DisplayMemberPath="Key" DockPanel.Dock="Left" Width="100" />
+            <TextBox Text="{Binding Value}" DataContext="{Binding Path=SelectedItem,ElementName=launchers}" DockPanel.Dock="Right" />
+        </DockPanel>-->
+    </StackPanel>
+</UserControl>

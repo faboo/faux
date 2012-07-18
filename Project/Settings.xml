@@ -1,0 +1,24 @@
+<Settings>
+	<Types>
+		<Type>
+			<Name>Folder</Name>
+			<IconPath>pack://application:,,,/Icons/Folder.ico</IconPath>
+      <Builtin>true</Builtin>
+		</Type>
+    <Type>
+			<Name>Other File</Name>
+			<IconPath>pack://application:,,,/Icons/File.ico</IconPath>
+      <Builtin>true</Builtin>
+    </Type>
+    <Type>
+      <Name>Other Files Folder</Name>
+      <IconPath>pack://application:,,,/Icons/Other Files Folder.ico</IconPath>
+      <Builtin>true</Builtin>
+    </Type>
+    <Type>
+      <Name>Unknown File</Name>
+      <IconPath>pack://application:,,,/Icons/File.ico</IconPath>
+      <Builtin>true</Builtin>
+    </Type>
+	</Types>
+</Settings>

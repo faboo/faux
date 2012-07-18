@@ -1,0 +1,126 @@
+﻿<!--
+Faux, Copyright (C) 2012 Ray Wallace
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation version 2 of the Licens.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
+<Window x:Class="Project.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:data="http://faboo.org/project/"
+        xmlns:src="clr-namespace:Project"
+        Name="window"
+        Icon="pack://application:,,,/Icons/Project.ico"
+        Title="{Binding Path=Project.Name,ElementName=window}"
+        Height="350"
+        Width="200"
+        ResizeMode="CanResize"
+        AllowDrop="True">
+    <Window.CommandBindings>
+        <CommandBinding Command="Save" Executed="ExecuteSave" CanExecute="CanSave" />
+        <CommandBinding Command="Open" Executed="ExecuteExplore" CanExecute="CanExplore" />
+        <CommandBinding Command="New" Executed="ExecuteNew" CanExecute="CanNew" />
+        <CommandBinding Command="src:ProjectCommands.EditTypes" Executed="ExecuteEditTypes" />
+        <CommandBinding Command="src:ProjectCommands.Launch" Executed="ExecuteLaunch" />
+        <CommandBinding Command="src:ProjectCommands.Start" Executed="ExecuteStart" />
+        <CommandBinding Command="src:ProjectCommands.Command" Executed="ExecuteCommand" CanExecute="CanExplore" />
+        <CommandBinding Command="src:ProjectCommands.Refresh" Executed="ExecuteRefresh" />
+    </Window.CommandBindings>
+    <DockPanel LastChildFill="True" DataContext="{Binding ElementName=window}">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <!--<MenuItem Header="Save Project" Command="Save" />-->
+                <MenuItem Header="Explore Project" Command="Open" />
+                <MenuItem Header="Command Project" Command="src:ProjectCommands.Command" />
+                <MenuItem Header="New Folder" Command="New" CommandParameter="{Binding Project.BaseFolder}" />
+                <MenuItem Header="Edit Types..." Command="src:ProjectCommands.EditTypes" />
+            </MenuItem>
+        </Menu>
+
+        <src:NodeTree x:Name="nodeTree" ItemsSource="{Binding Project.BaseFolder.Contents}">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate
+                    DataType="{x:Type data:Folder}"
+                    ItemsSource="{Binding Contents}">
+                    <Grid>
+                        <DockPanel>
+                            <Image Source="{Binding Type.IconImage}" Height="24" Width="24" DockPanel.Dock="Left" />
+                            <TextBlock Text="{Binding Name}" Margin="4,0" VerticalAlignment="Center" />
+                        
+                            <DockPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="New Folder" Command="New" CommandParameter="{Binding}" />
+                                    <MenuItem Header="Rename" Command="src:ProjectCommands.Rename" />
+                                </ContextMenu>
+                            </DockPanel.ContextMenu>
+                        </DockPanel>
+                        <src:Rename DataContext="{Binding}" Visibility="Hidden" HorizontalAlignment="Stretch" />
+                    </Grid>
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type data:File}">
+                    <Grid>
+                        <DockPanel>
+                            <Image Source="{Binding Type.IconImage}" Height="24" Width="24" DockPanel.Dock="Left" />
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+
+                            <DockPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Launch" FontWeight="Bold" Command="src:ProjectCommands.Launch" CommandParameter="{Binding}" />
+                                    <MenuItem Header="Start" Command="src:ProjectCommands.Start" CommandParameter="{Binding}" />
+                                    <Separator />
+                                    <MenuItem Header="Rename" Command="src:ProjectCommands.Rename" />
+                                </ContextMenu>
+                            </DockPanel.ContextMenu>
+                        </DockPanel>
+                        <src:Rename DataContext="{Binding}" Visibility="Hidden" HorizontalAlignment="Stretch" />
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type data:OtherFile}">
+                    <DockPanel>
+                        <Image Source="{Binding Type.IconImage}" Height="24" Width="24" DockPanel.Dock="Left" />
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+
+                        <DockPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Start" FontWeight="Bold" Command="src:ProjectCommands.Start" CommandParameter="{Binding}" />
+                            </ContextMenu>
+                        </DockPanel.ContextMenu>
+                    </DockPanel>
+                </DataTemplate>
+                <HierarchicalDataTemplate
+                    DataType="{x:Type data:OtherFilesFolder}"
+                    ItemsSource="{Binding Contents}">
+                    <Grid>
+                        <DockPanel>
+                            <Image Source="{Binding Type.IconImage}" Height="24" Width="24" DockPanel.Dock="Left" />
+                            <TextBlock Text="{Binding Name}" Margin="4,0" VerticalAlignment="Center" />
+
+                            <DockPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Refresh" Command="src:ProjectCommands.Refresh" CommandParameter="{Binding}" />
+                                    <MenuItem Header="Start" Command="src:ProjectCommands.Start" CommandParameter="{Binding}" />
+                                </ContextMenu>
+                            </DockPanel.ContextMenu>
+                        </DockPanel>
+                        <src:Rename DataContext="{Binding}" Visibility="Hidden" HorizontalAlignment="Stretch" />
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="OnFileLaunch"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </src:NodeTree>
+    </DockPanel>
+</Window>
