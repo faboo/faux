@@ -31,5 +31,6 @@ namespace Project
         public static readonly RoutedUICommand Start = new RoutedUICommand("Start", "Start", typeof(ProjectCommands));
         public static readonly RoutedUICommand Command = new RoutedUICommand("Command", "Command Project", typeof(ProjectCommands));
         public static readonly RoutedUICommand Refresh = new RoutedUICommand("Refresh", "Refresh", typeof(ProjectCommands));
+        public static readonly RoutedUICommand SearchIcons = new RoutedUICommand("SearchIcons", "Search...", typeof(ProjectCommands));
     }
 }

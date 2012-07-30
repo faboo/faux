@@ -26,6 +26,7 @@ namespace Project
         public FileTextBox()
         {
             AllowDrop = true;
+            ToolTip = "Drag a file into the box";
         }
 
         protected override void OnDragOver(DragEventArgs args)

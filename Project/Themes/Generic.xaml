@@ -56,4 +56,19 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="{x:Type src:HyperText}">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type src:HyperText}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <TextBlock Text="{TemplateBinding Content}" Foreground="Blue" TextDecorations="Underline" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

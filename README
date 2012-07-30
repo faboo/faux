@@ -76,6 +76,7 @@ icon).
 
 * More uniform icon set
 
-* Integration with a icon web service for choosing appropriate icons
+* Integration with an icon web service for choosing appropriate icons
+ - DONE!
 
 * Renaming the application and executable to "Faux"

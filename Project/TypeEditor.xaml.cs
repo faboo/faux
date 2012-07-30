@@ -49,6 +49,17 @@ namespace Project
         {
         }
 
+        private void ExecuteSearch(object sender, ExecutedRoutedEventArgs args)
+        {
+            IconBrowser dialog = new IconBrowser();
+
+            dialog.Owner = this.FindVisualParent<Window>(w => true);
+            if (dialog.ShowDialog() == true)
+            {
+                icon.Text = dialog.SelectedIcon.URL.ToString();
+            }
+        }
+
         private void OnArgQuestionClicked(object sender, RoutedEventArgs e)
         {
             argsToolTip.IsOpen = !argsToolTip.IsOpen;

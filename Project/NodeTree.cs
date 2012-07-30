@@ -98,12 +98,12 @@ namespace Project
                 Node sourceNode = (Node)sourceItem.Header;
 
                 if (!(targetItem.Header is Folder))
-                    targetItem = FindVisualParent<TreeViewItem>(targetItem, o => o.Header is Folder);
+                    targetItem = targetItem.FindVisualParent<TreeViewItem>(o => o.Header is Folder);
 
                 ((Folder)targetItem.Header).Add(sourceNode);
 
                 //finding Parent TreeViewItem of dragged TreeViewItem 
-                TreeViewItem parentItem = FindVisualParent<TreeViewItem>(sourceItem, o => o.Header is Folder);
+                TreeViewItem parentItem = sourceItem.FindVisualParent<TreeViewItem>(o => o.Header is Folder && o != sourceItem);
                 // if parent is null then remove from TreeView else remove from Parent TreeViewItem
                 if (parentItem == null)
                     ((ObservableCollection<Node>)ItemsSource).Remove(sourceNode);
@@ -183,7 +183,7 @@ namespace Project
         {
             Point position = args.GetPosition(this);
 
-            if (args.ChangedButton == MouseButton.Left && FindVisualParent<TreeViewItem>(this.InputHitTest(position), o => true) != null)
+            if (args.ChangedButton == MouseButton.Left && this.InputHitTest(position).FindVisualParent<TreeViewItem>(o => true) != null)
             {
                 lastTreeClick = position;
             }
@@ -237,69 +237,9 @@ namespace Project
             }
         }
 
-        static TObject FindVisualParent<TObject>(IInputElement child, Func<TObject, bool> test) where TObject : UIElement
-        {
-            if (child is UIElement)
-                return FindVisualParent<TObject>(child as UIElement, test);
-            else
-                return null;
-        }
-
-        static TObject FindVisualParent<TObject>(UIElement child, Func<TObject,bool> test) where TObject : UIElement
-        {
-            if (child == null)
-            {
-                return null;
-            }
-
-            UIElement parent = child as UIElement; // VisualTreeHelper.GetParent(child) as UIElement;
-
-            while (parent != null)
-            {
-                TObject found = parent as TObject;
-                if (found != null && test(found))
-                {
-                    return found;
-                }
-                else
-                {
-                    parent = VisualTreeHelper.GetParent(parent) as UIElement;
-                }
-            }
-
-            return null;
-        }
-
-        static TObject FindVisualChild<TObject>(UIElement parent) where TObject : UIElement
-        {
-            int children = 0;
-
-            if (parent == null)
-            {
-                return null;
-            }
-
-            children = VisualTreeHelper.GetChildrenCount(parent);
-
-            for (int idx = 0; idx < children; ++idx)
-            {
-                UIElement child = VisualTreeHelper.GetChild(parent, idx) as UIElement;
-
-                TObject found = child as TObject;
-
-                if (found != null)
-                    return found;
-                else if ((found = FindVisualChild<TObject>(child)) != null)
-                    return found;
-            }
-
-            return null;
-        }
-
-
         private void OnRenameExecuted(object sender, ExecutedRoutedEventArgs args)
         {
-            Rename rename = FindVisualChild<Rename>(selectedContainer);
+            Rename rename = selectedContainer.FindVisualChild<Rename>();
 
             if (rename != null)
                 rename.Show();

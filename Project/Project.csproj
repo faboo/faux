@@ -97,8 +97,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CustomControl1.cs" />
     <Compile Include="FileTextBox.cs" />
+    <Compile Include="HyperText.cs" />
+    <Compile Include="IconBrowser.xaml.cs">
+      <DependentUpon>IconBrowser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NotConverter.cs" />
     <Compile Include="Rename.xaml.cs">
       <DependentUpon>Rename.xaml</DependentUpon>
     </Compile>
@@ -109,6 +113,11 @@
     <Compile Include="TypesEditor.xaml.cs">
       <DependentUpon>TypesEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UIElementExtension.cs" />
+    <Page Include="IconBrowser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

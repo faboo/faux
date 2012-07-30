@@ -26,6 +26,7 @@ namespace Project
     public class Folder : Node, IXmlSerializable
     {
 		public static readonly DependencyProperty ContentsProperty = DependencyProperty.Register("Contents", typeof(ObservableCollection<Node>), typeof(Folder));
+        private bool changing = false;
 
 		public ObservableCollection<Node> Contents
 		{
@@ -62,11 +63,16 @@ namespace Project
 
         private void OnContentsChanged(object sender, EventArgs args)
         {
-            Contents.Sort(CompareNodes);
-            OnPropertyChanged(new DependencyPropertyChangedEventArgs(
-                ContentsProperty,
-                Contents,
-                Contents));
+            if (!changing && !(sender is System.Windows.Media.Imaging.BitmapImage))
+            {
+                changing = true;
+                Contents.Sort(CompareNodes);
+                OnPropertyChanged(new DependencyPropertyChangedEventArgs(
+                    ContentsProperty,
+                    Contents,
+                    Contents));
+                changing = false;
+            }
         }
 
         public virtual void Add(Node node)

@@ -1,0 +1,43 @@
+﻿<Window x:Class="Project.IconBrowser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:src="clr-namespace:Project"
+        Title="IconBrowser"
+        Name="dialog"
+        Height="300"
+        Width="300">
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="ExecuteSelect" CanExecute="CanSelect" />
+        <CommandBinding Command="Search" Executed="ExecuteSearch" CanExecute="CanSearch" />
+    </Window.CommandBindings>
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="3">
+            <Button Content="Search" Command="Search" DockPanel.Dock="Right" Width="60"/>
+            <TextBox Text="{Binding Path=SearchTerms,ElementName=dialog,UpdateSourceTrigger=PropertyChanged}" />
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="7,2">
+            <TextBlock Text="Powered by" Margin="0,0,3,0" />
+            <src:HyperText Text="Icon Finder" Target="http://www.iconfinder.com" />
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
+            <Button Content="Select" Command="Open" Width="80" Height="22" Margin="7" />
+            <Button Content="Cancel" Click="OnCancel" Width="80" Height="22" Margin="7" />
+        </StackPanel>
+        
+        <ListBox ItemsSource="{Binding Path=Icons,ElementName=dialog}" SelectedItem="{Binding Path=SelectedIcon,ElementName=dialog}">
+            <ListBox.Template>
+                <ControlTemplate>
+                    <ScrollViewer>
+                        <UniformGrid IsItemsHost="true" />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ListBox.Template>
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="src:Icon">
+                    <Image Source="{Binding Image}" Height="24" Width="24" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</Window>
