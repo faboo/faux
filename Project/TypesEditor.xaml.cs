@@ -24,6 +24,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Collections.ObjectModel;
 
 namespace Project
 {
@@ -32,15 +33,24 @@ namespace Project
     /// </summary>
     public partial class TypesEditor : Window
     {
+		public static readonly DependencyProperty TypesProperty = DependencyProperty.Register("Types", typeof(IList<Type>), typeof(TypesEditor));
+
         public TypesEditor()
         {
             InitializeComponent();
         }
 
+        public IList<Type> Types
+		{
+            get { return (IList<Type>)GetValue(TypesProperty); }
+			set { SetValue(TypesProperty, value); }
+		}
+
         private void OnNewExecuted(object sender, ExecutedRoutedEventArgs args)
         {
             Type newType = new Type();
-            Settings.Current.Types.Add(newType);
+            //Settings.Current.Types.Add(newType);
+            Types.Add(newType);
             types.SelectedItem = newType;
         }
 
@@ -51,7 +61,8 @@ namespace Project
 
         private void OnDeleteExecuted(object sender, ExecutedRoutedEventArgs args)
         {
-            Settings.Current.Types.Remove(types.SelectedItem as Type);
+            //Settings.Current.Types.Remove(types.SelectedItem as Type);
+            Types.Remove(types.SelectedItem as Type);
         }
 
         protected override void OnClosed(EventArgs e)

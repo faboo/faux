@@ -4,6 +4,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System;
 using System.Diagnostics;
+using System.Windows.Data;
+using System.Collections.ObjectModel;
 
 namespace Project
 {
@@ -13,18 +15,27 @@ namespace Project
     public partial class MainWindow : Window
     {
 		public static readonly DependencyProperty ProjectProperty = DependencyProperty.Register("Project", typeof(Current), typeof(MainWindow));
+		public static readonly DependencyProperty GlobalCommandsProperty = DependencyProperty.Register("GlobalCommands", typeof(ObservableCollection<Command>), typeof(MainWindow));
 
 		public Current Project
 		{
 			get { return (Current)GetValue(ProjectProperty); }
 			set { SetValue(ProjectProperty, value); }
 		}
+		public ObservableCollection<Command> GlobalCommands
+		{
+			get { return (ObservableCollection<Command>)GetValue(GlobalCommandsProperty); }
+			set { SetValue(GlobalCommandsProperty, value); }
+		}
+
+        MacroExpander macros = new MacroExpander();
 
         public MainWindow()
         {
             InitializeComponent();
             Topmost = true;
             Settings load = Settings.Current;
+            GlobalCommands = Settings.Current.Commands;
             try
             {
                 if((Application.Current as App).Args.Length > 0)
@@ -48,6 +59,10 @@ namespace Project
             System.IO.Directory.SetCurrentDirectory(System.IO.Path.GetDirectoryName(file));
             Project = new Current(file);
             Settings.Current.LastProject = file;
+            macros.Project = Project;
+            //Commands.Clear();
+            //Commands.Add(Settings.Current.Commands);
+            //Commands.Add(Project.Commands);
         }
 
         protected override void OnDragOver(DragEventArgs args)
@@ -137,7 +152,22 @@ namespace Project
             TypesEditor dialog = new TypesEditor();
 
             dialog.Owner = this;
+            if(args.Parameter is Current)
+                dialog.Types = Project.TypeOverrides;
+            else
+                dialog.Types = Settings.Current.Types;
             dialog.Closed += (s, a) => RecalculateTypes();
+            dialog.Show();
+        }
+
+        private void ExecuteEditCommands(object sender, ExecutedRoutedEventArgs args) {
+            CommandsEditor dialog = new CommandsEditor();
+
+            dialog.Owner = this;
+            if(args.Parameter is Current)
+                dialog.Commands = Project.Commands;
+            else
+                dialog.Commands = Settings.Current.Commands;
             dialog.Show();
         }
 
@@ -153,7 +183,9 @@ namespace Project
 
         private void ExecuteCommand(object sender, ExecutedRoutedEventArgs args)
         {
-            Process.Start("cmd");
+            Command command = args.Parameter as Command;
+
+            command.Launch(nodeTree.SelectedItem as Node, macros);
         }
 
         private void ExecuteRefresh(object sender, ExecutedRoutedEventArgs args)
@@ -165,7 +197,6 @@ namespace Project
 
         private void LaunchFile(File node)
         {
-            MacroExpander macros = new MacroExpander { Project = Project };
             node.Launch(macros);
         }
 

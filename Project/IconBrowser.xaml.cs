@@ -56,6 +56,7 @@ namespace Project
 		private void ExecuteSearch(object sender, ExecutedRoutedEventArgs args){
 			string terms = SearchTerms;
 
+            Cursor = Cursors.Wait;
 			ThreadPool.QueueUserWorkItem(o =>
 					SearchIcons(terms));
 
@@ -68,22 +69,30 @@ namespace Project
         }
 
 		private void SearchIcons(string terms){
-            string searchUrl = String.Format(
-                "http://www.iconfinder.com/xml/search/?q={0}&p=0&c=25&min={1}&max={2}&api_key={3}",
-                terms.Replace(' ', '+'),
-                MinSize,
-                MaxSize,
-                API_KEY);
-            WebClient web = new WebClient();
-            string strResponse = web.DownloadString(searchUrl);
-            XmlDocument xmlResponse = new XmlDocument();
+            try {
+                string searchUrl = String.Format(
+                    "http://www.iconfinder.com/xml/search/?q={0}&p=0&c=25&min={1}&max={2}&api_key={3}",
+                    terms.Replace(' ', '+'),
+                    MinSize,
+                    MaxSize,
+                    API_KEY);
+                WebClient web = new WebClient();
+                string strResponse = web.DownloadString(searchUrl);
+                XmlDocument xmlResponse = new XmlDocument();
 
-            xmlResponse.LoadXml(strResponse);
+                xmlResponse.LoadXml(strResponse);
 
-            foreach (var image in xmlResponse.SelectNodes("/results/iconmatches/icon/image"))
-            {
-                if (image is XmlElement)
-                    AddIcon((image as XmlElement).InnerText);
+                Dispatcher.BeginInvoke(new Action(() =>
+                    Cursor = Cursors.AppStarting));
+
+                foreach(var image in xmlResponse.SelectNodes("/results/iconmatches/icon/image")) {
+                    if(image is XmlElement)
+                        AddIcon((image as XmlElement).InnerText);
+                }
+            }
+            finally {
+                Dispatcher.BeginInvoke(new Action(() =>
+                    Cursor = Cursors.Arrow));
             }
 		}
 

@@ -21,7 +21,7 @@ using System.Collections;
 
 namespace Project
 {
-    public static class ObserverableCollectionExtension
+    public static class ObservableCollectionExtension
     {
         public static void Sort<T>(this ObservableCollection<T> collection, Func<T,T,int> comparer)
         {

@@ -35,6 +35,9 @@ namespace Project
         [XmlArrayItem("Type")]
         public ObservableCollection<Type> Types { get; set; }
 
+        [XmlArrayItem("Command")]
+        public ObservableCollection<Command> Commands { get; set; }
+
         private static string GetAppDataPath()
         {
             if (ApplicationDeployment.IsNetworkDeployed)

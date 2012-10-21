@@ -27,12 +27,6 @@ namespace Project
     {
         public static readonly DependencyProperty RealPathProperty = DependencyProperty.Register("RealPath", typeof(string), typeof(File), new FrameworkPropertyMetadata(OnRealPathChanged));
 
-        public string RealPath
-        {
-            get { return (string)GetValue(RealPathProperty); }
-            set { SetValue(RealPathProperty, value); }
-        }
-
         public File()
         {
             Init();
@@ -45,11 +39,16 @@ namespace Project
             Init();
         }
 
+        public string RealPath {
+            get { return (string)GetValue(RealPathProperty); }
+            set { SetValue(RealPathProperty, value); }
+        }
+
         private void Init()
         {
             Type = Settings.Current.Types.FirstOrDefault(t => t.Name == "Unknown File");
             if(RealPath != null)
-                CalculateType();
+                CalculateTypes();
         }
 
         public override void ReadXml(System.Xml.XmlReader reader)
@@ -88,17 +87,30 @@ namespace Project
         }
 
 		protected void OnRealPathChanged(DependencyPropertyChangedEventArgs args){
-            CalculateType();
+            CalculateTypes();
 		}
 
-        public void CalculateType()
+        public override void CalculateTypes()
         {
-            foreach (var type in Settings.Current.Types)
-                if (type.Pattern != null && Regex.IsMatch(RealPath, type.Pattern))
-                {
-                    Type = type;
-                    break;
-                }
+            Type = null;
+
+            if(Project != null)
+                foreach(var type in Project.TypeOverrides)
+                    if(type.Pattern != null && Regex.IsMatch(RealPath, type.Pattern)) {
+                        Type = type;
+                        break;
+                    }
+
+            if(Type == null)
+                foreach (var type in Settings.Current.Types)
+                    if (type.Pattern != null && Regex.IsMatch(RealPath, type.Pattern))
+                    {
+                        Type = type;
+                        break;
+                    }
+
+            if(Type == null)
+                Type = Settings.Current.Types.FirstOrDefault(t => t.Name == "Unknown File");
         }
 
 

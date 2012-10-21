@@ -31,11 +31,18 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
         <CommandBinding Command="Open" Executed="ExecuteExplore" CanExecute="CanExplore" />
         <CommandBinding Command="New" Executed="ExecuteNew" CanExecute="CanNew" />
         <CommandBinding Command="src:ProjectCommands.EditTypes" Executed="ExecuteEditTypes" />
+        <CommandBinding Command="src:ProjectCommands.EditCommands" Executed="ExecuteEditCommands" />
         <CommandBinding Command="src:ProjectCommands.Launch" Executed="ExecuteLaunch" />
         <CommandBinding Command="src:ProjectCommands.Start" Executed="ExecuteStart" />
         <CommandBinding Command="src:ProjectCommands.Command" Executed="ExecuteCommand" CanExecute="CanExplore" />
         <CommandBinding Command="src:ProjectCommands.Refresh" Executed="ExecuteRefresh" />
     </Window.CommandBindings>
+    
+    <Window.Resources>
+        <CollectionViewSource x:Key="globalCommands" Source="{Binding Path=GlobalCommands,ElementName=window}" />
+        <CollectionViewSource x:Key="projectCommands" Source="{Binding Path=Project.Commands,ElementName=window}" />
+    </Window.Resources>
+    
     <DockPanel LastChildFill="True" DataContext="{Binding ElementName=window}">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -44,6 +51,32 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
                 <MenuItem Header="Command Project" Command="src:ProjectCommands.Command" />
                 <MenuItem Header="New Folder" Command="New" CommandParameter="{Binding Project.BaseFolder}" />
                 <MenuItem Header="Edit Types..." Command="src:ProjectCommands.EditTypes" />
+                <MenuItem Header="Edit Commands..." Command="src:ProjectCommands.EditCommands" />
+            </MenuItem>
+            <MenuItem Header="Project">
+                <MenuItem Header="Edit Types..." Command="src:ProjectCommands.EditTypes" CommandParameter="{Binding Project}" />
+                <MenuItem Header="Edit Commands..." Command="src:ProjectCommands.EditCommands" CommandParameter="{Binding Project}" />
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Always On Top" IsCheckable="True" IsChecked="{Binding Topmost}" />
+            </MenuItem>
+            <MenuItem Header="Commands" Name="commands">
+                <MenuItem.Resources>
+                    <DataTemplate DataType="{x:Type data:Command}">
+                        <ContentPresenter Content="{Binding Name}" />
+                    </DataTemplate>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Command" Value="src:ProjectCommands.Command" />
+                        <Setter Property="CommandParameter" Value="{Binding}" />
+                    </Style>
+                </MenuItem.Resources>
+                <MenuItem.ItemsSource>
+                    <CompositeCollection>
+                        <CollectionContainer Collection="{Binding Source={StaticResource globalCommands}}" />
+                        <Separator />
+                        <CollectionContainer Collection="{Binding Source={StaticResource projectCommands}}" />
+                    </CompositeCollection>
+                </MenuItem.ItemsSource>
             </MenuItem>
         </Menu>
 

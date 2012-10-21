@@ -22,6 +22,7 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
         xmlns:src="clr-namespace:Project"
         Icon="pack://application:,,,/Icons/Project.ico"
         Title="Types Editor"
+        Name="window"
         Height="370"
         Width="600">
     <Window.CommandBindings>
@@ -30,7 +31,7 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
     </Window.CommandBindings>
     <Window.Resources>
         <CollectionViewSource x:Key='typesItems'
-                              Source="{Binding Path=Types,Source={x:Static data:Settings.Current}}">
+                              Source="{Binding Path=Types,ElementName=window}">
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Name" Direction="Ascending" />
             </CollectionViewSource.SortDescriptions>
@@ -42,37 +43,46 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
             <Button Content="Delete" Command="Delete" Width="80" Height="22" Margin="3" />
         </StackPanel>
         
-        <src:TypeEditor Width="250" DockPanel.Dock="Right" DataContext="{Binding Path=SelectedItem,ElementName=types}" />
-        
-        <ListView Name="types" ItemsSource="{Binding Source={StaticResource typesItems}}">
-            <ListView.View>
-                <GridView>
-                    <!-- Icon -->
-                    <GridViewColumn>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="data:Type">
-                                <Image Source="{Binding IconImage}" Height="24" Width="24" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <!-- Name -->
-                    <GridViewColumn Header="Name">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="data:Type">
-                                <TextBlock Text="{Binding Name}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <!-- Pattern -->
-                    <GridViewColumn Header="Extension">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="data:Type">
-                                <TextBlock Text="{Binding Pattern}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3" />
+                <ColumnDefinition Width="250" />
+            </Grid.ColumnDefinitions>
+            <ListView Name="types" ItemsSource="{Binding Source={StaticResource typesItems}}" Grid.Column="0">
+                <ListView.View>
+                    <GridView>
+                        <!-- Icon -->
+                        <GridViewColumn>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="data:Type">
+                                    <Image Source="{Binding IconImage}" Height="24" Width="24" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!-- Name -->
+                        <GridViewColumn Header="Name">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="data:Type">
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <!-- Pattern -->
+                        <GridViewColumn Header="Extension">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="data:Type">
+                                    <TextBlock Text="{Binding Pattern}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            
+            <GridSplitter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
+
+            <src:TypeEditor HorizontalAlignment="Stretch"  DataContext="{Binding Path=SelectedItem,ElementName=types}" />
+        </Grid>
     </DockPanel>
 </Window>

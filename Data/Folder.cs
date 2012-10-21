@@ -50,15 +50,22 @@ namespace Project
                 Add(node);
         }
 
-        public void CalculateTypes()
+        public override void CalculateTypes()
         {
             foreach (Node node in this.Contents.ToArray())
             {
-                if (node is Folder && !(node is OtherFilesFolder))
-                    (node as Folder).CalculateTypes();
-                else if(node is File)
-                    (node as File).CalculateType();
+                //if (node is Folder && !(node is OtherFilesFolder))
+                    node.CalculateTypes();
+                //else if(node is File)
+                //    (node as File).CalculateType();
             }
+        }
+
+        public override void SetProject(Current project) {
+            base.SetProject(project);
+
+            foreach(Node node in Contents)
+                node.SetProject(project);
         }
 
         private void OnContentsChanged(object sender, EventArgs args)
@@ -87,6 +94,7 @@ namespace Project
 
         protected void AddCore(Node node)
         {
+            node.SetProject(Project);
             node.Changed += OnContentsChanged;
             Contents.InsertSorted(node, CompareNodes);
             OnPropertyChanged(new DependencyPropertyChangedEventArgs(

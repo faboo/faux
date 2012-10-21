@@ -38,6 +38,8 @@ namespace Project
 			get { return (Type)GetValue(TypeProperty); }
 			set { SetValue(TypeProperty, value); }
 		}
+        [XmlIgnore]
+        public Current Project { get; set; }
 
         public System.Xml.Schema.XmlSchema GetSchema()
         {
@@ -66,6 +68,13 @@ namespace Project
         public virtual void WriteXml(System.Xml.XmlWriter writer)
         {
             writer.WriteElementString("Name", Name);
+        }
+
+        public virtual void SetProject(Current project) {
+            Project = project;
+        }
+
+        public virtual void CalculateTypes() {
         }
 
         protected virtual void OnNameChanged(DependencyPropertyChangedEventArgs args)

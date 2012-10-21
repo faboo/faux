@@ -28,16 +28,16 @@ namespace Project
                 { "{Project}", m => m.Project.Name },
                 { "{ProjectPath}", m => m.Project.SavePath },
                 { "{ProjectDir}", m => Path.GetDirectoryName(m.Project.SavePath) },
-                { "{FilePath}", m => m.Target.RealPath },
-                { "{FileName}", m => Path.GetFileName(m.Target.RealPath) },
-                { "{FileDir}", m => Path.GetDirectoryName(m.Target.RealPath) },
-                { "{NodeName}", m => m.Target.Name },
-                { "{NodeType}", m => m.Target.Type.Name },
+                { "{FilePath}", m => !(m.Target is File)? "" : (m.Target as File).RealPath },
+                { "{FileName}", m => !(m.Target is File)? "" : Path.GetFileName((m.Target as File).RealPath) },
+                { "{FileDir}", m => !(m.Target is File)? "" : Path.GetDirectoryName((m.Target as File).RealPath) },
+                { "{NodeName}", m => m.Target == null? "" : m.Target.Name },
+                { "{NodeType}", m => m.Target == null? "" : m.Target.Type.Name },
             };
         public static ICollection<string> Macros { get { return macros.Keys; } }
 
         public Current Project { get; set; }
-        public File Target { get; set; }
+        public Node Target { get; set; }
 
         public string Expand(string source)
         {

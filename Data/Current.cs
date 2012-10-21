@@ -38,14 +38,17 @@ namespace Project
 			set { SetValue(BaseFolderProperty, value); }
 		}
         [XmlArrayItem("Type")]
-        public List<Type> TypeOverrides { get; set; }
+        public FreezableCollection<Type> TypeOverrides { get; set; }
+        [XmlArrayItem("Command")]
+        public FreezableCollection<Command> Commands { get; set; }
 
         private FileSystemWatcher watch = null;
         private bool loading = true;
 
         public Current()
         {
-            TypeOverrides = new List<Type>();
+            TypeOverrides = new FreezableCollection<Type>();
+            Commands = new FreezableCollection<Command>();
         }
 
         public Current(string file)
@@ -64,10 +67,17 @@ namespace Project
                     project.Close();
                 }
 
-                BaseFolder = read.BaseFolder;
-                BaseFolder.Name = Name;
-                read.BaseFolder = null;
                 TypeOverrides = read.TypeOverrides;
+                TypeOverrides.Changed += (o, a) =>
+                    OnChanged();
+                Commands = read.Commands;
+                Commands.Changed += (o, a) =>
+                    OnChanged();
+                BaseFolder = read.BaseFolder;
+                BaseFolder.SetProject(this);
+                BaseFolder.Name = Name;
+                BaseFolder.CalculateTypes();
+                read.BaseFolder = null;
             }
             catch
             {

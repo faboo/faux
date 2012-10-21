@@ -27,9 +27,11 @@ namespace Project
                 new KeyGesture(Key.F2)
             });
         public static readonly RoutedUICommand EditTypes = new RoutedUICommand("Edit Types...", "EditTypes", typeof(ProjectCommands));
+        public static readonly RoutedUICommand EditCommands = new RoutedUICommand("Edit Commands...", "EditCommands", typeof(ProjectCommands));
         public static readonly RoutedUICommand Launch = new RoutedUICommand("Launch", "Launch", typeof(ProjectCommands));
         public static readonly RoutedUICommand Start = new RoutedUICommand("Start", "Start", typeof(ProjectCommands));
         public static readonly RoutedUICommand Command = new RoutedUICommand("Command", "Command Project", typeof(ProjectCommands));
+        public static readonly RoutedUICommand LaunchCommand = new RoutedUICommand("LaunchCommand", "Launch...", typeof(ProjectCommands));
         public static readonly RoutedUICommand Refresh = new RoutedUICommand("Refresh", "Refresh", typeof(ProjectCommands));
         public static readonly RoutedUICommand SearchIcons = new RoutedUICommand("SearchIcons", "Search...", typeof(ProjectCommands));
     }
