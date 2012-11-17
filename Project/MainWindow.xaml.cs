@@ -181,7 +181,11 @@ namespace Project
             StartFile((Node)args.Parameter);
         }
 
-        private void ExecuteCommand(object sender, ExecutedRoutedEventArgs args)
+        private void ExecuteCommand(object sender, ExecutedRoutedEventArgs args) {
+            Process.Start("cmd");
+        }
+
+        private void ExecuteLaunchCommand(object sender, ExecutedRoutedEventArgs args)
         {
             Command command = args.Parameter as Command;
 

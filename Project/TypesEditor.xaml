@@ -47,7 +47,7 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="3" />
-                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="300" />
             </Grid.ColumnDefinitions>
             <ListView Name="types" ItemsSource="{Binding Source={StaticResource typesItems}}" Grid.Column="0">
                 <ListView.View>
@@ -82,7 +82,17 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
             
             <GridSplitter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
 
-            <src:TypeEditor HorizontalAlignment="Stretch"  DataContext="{Binding Path=SelectedItem,ElementName=types}" />
+            <src:TypeEditor HorizontalAlignment="Stretch"  DataContext="{Binding Path=SelectedItem,ElementName=types}" Grid.Column="2">
+                <src:TypeEditor.Style>
+                    <Style TargetType="src:TypeEditor">
+                        <Style.Triggers>
+                            <Trigger Property="DataContext" Value="{x:Null}">
+                                <Setter Property="IsEnabled" Value="False" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </src:TypeEditor.Style>
+            </src:TypeEditor>
         </Grid>
     </DockPanel>
 </Window>

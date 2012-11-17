@@ -29,7 +29,17 @@
 
             <GridSplitter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
 
-            <src:CommandEditor HorizontalAlignment="Stretch"  DataContext="{Binding Path=SelectedItem,ElementName=commands}" Grid.Column="2" />
+            <src:CommandEditor HorizontalAlignment="Stretch"  DataContext="{Binding Path=SelectedItem,ElementName=commands}" Grid.Column="2">
+                <src:CommandEditor.Style>
+                    <Style TargetType="src:CommandEditor">
+                            <Style.Triggers>
+                                <Trigger Property="DataContext" Value="{x:Null}">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                </src:CommandEditor.Style>
+            </src:CommandEditor>
         </Grid>
     </DockPanel>
 </Window>

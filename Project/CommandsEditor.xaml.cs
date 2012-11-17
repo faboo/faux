@@ -40,7 +40,8 @@ namespace Project {
         }
 
         private void CanDelete(object sender, CanExecuteRoutedEventArgs args) {
-            args.CanExecute = commands.SelectedItem != null;
+            if(IsInitialized)
+                args.CanExecute = commands.SelectedItem != null;
         }
     }
 }
