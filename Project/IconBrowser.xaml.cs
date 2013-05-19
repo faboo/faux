@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Net;
 using System.Xml;
+using System.IO;
 
 namespace Project
 {
@@ -89,6 +90,15 @@ namespace Project
                     if(image is XmlElement)
                         AddIcon((image as XmlElement).InnerText);
                 }
+            }
+            catch(WebException ex) {
+                using(StreamReader stream = new StreamReader(ex.Response.GetResponseStream())) {
+                    MessageBox.Show(stream.ReadToEnd(), "Project Error");
+                    stream.Close();
+                }
+            }
+            catch(Exception ex) {
+                MessageBox.Show(ex.ToString(), "Project Error");
             }
             finally {
                 Dispatcher.BeginInvoke(new Action(() =>
