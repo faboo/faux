@@ -16,21 +16,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml.Serialization;
-using System.Xml;
+using System.Windows;
+using System.IO;
+using System.Diagnostics;
 
-namespace Project
-{
-    public class ProjectFolder : Folder
-    {
-        protected override System.Windows.Freezable CreateInstanceCore()
-        {
-            return new ProjectFolder();
+namespace Project {
+    public class ProjectFilesFolder: Folder {
+        public ProjectFilesFolder() {
+            Type pffType = Settings.Current.Types.FirstOrDefault(t => t.Name == "Project Files Folder");
+
+            Name = "Project Files";
+
+            if(pffType != null)
+                pffType = Settings.Current.Types.FirstOrDefault(t => t.Name == "Folder");
+            if(pffType != null)
+                Type = pffType;
         }
 
-        public override void Add(Node node)
-        {
-            AddCore(node);
+        public ProjectFilesFolder(Folder old) : this() {
+            foreach(var node in old.Contents)
+                Contents.Add(node);
+        }
+
+        protected override System.Windows.Freezable CreateInstanceCore() {
+            return new ProjectFilesFolder();
         }
     }
 }

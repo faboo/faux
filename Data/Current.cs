@@ -44,6 +44,7 @@ namespace Project
 
         private FileSystemWatcher watch = null;
         private bool loading = true;
+        private bool shouldSave = true;
 
         public Current()
         {
@@ -51,10 +52,11 @@ namespace Project
             Commands = new FreezableCollection<Command>();
         }
 
-        public Current(string file)
+        public Current(string file, bool shouldSave)
         {
             Name = Path.GetFileNameWithoutExtension(file);
             SavePath = file;
+            this.shouldSave = shouldSave;
 
             try
             {
@@ -88,6 +90,7 @@ namespace Project
                 };
             }
 
+            EnsureProjectFiles();
             UpdateOtherFiles();
 
             watch = new FileSystemWatcher(Path.GetDirectoryName(SavePath));
@@ -123,13 +126,38 @@ namespace Project
         protected override void OnChanged()
         {
             base.OnChanged();
-            if(!loading)
+            if(!loading && shouldSave)
                 Save();
         }
 
         protected override Freezable CreateInstanceCore()
         {
-            return new Current();
+            var current = new Current();
+            current.shouldSave = shouldSave;
+            return current;
+        }
+
+        private void EnsureProjectFiles() {
+            ProjectFilesFolder pff = (ProjectFilesFolder)BaseFolder.Contents.FirstOrDefault(f => f is ProjectFilesFolder);
+
+            if(pff == null) {
+                var files = BaseFolder.Contents.Where(f => !(f is ProjectFilesFolder || f is OtherFilesFolder)).ToArray();
+
+                if(files.Length == 1 && files[0] is Folder && files[0].Name.Equals("Project Files")) {
+                    pff = new ProjectFilesFolder(files[0] as Folder);
+                    BaseFolder.Remove(files[0]);
+                }
+                else {
+                    pff = new ProjectFilesFolder();
+
+                    foreach(var file in files) {
+                        pff.Add(file);
+                        BaseFolder.Remove(file);
+                    }
+                }
+                
+                BaseFolder.Add(pff);
+            }
         }
 
         private void UpdateOtherFiles()

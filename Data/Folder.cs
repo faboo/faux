@@ -145,12 +145,15 @@ namespace Project
         private void ReadContents(XmlReader reader)
         {
             XmlSerializer des = null;
+            XmlSerializer projectFilesDes = new XmlSerializer(typeof(ProjectFilesFolder));
             XmlSerializer folderDes = new XmlSerializer(typeof(Folder));
             XmlSerializer fileDes = new XmlSerializer(typeof(File));
 
             while (reader.IsStartElement())
             {
-                if (reader.Name == "Folder")
+                if(reader.Name == "ProjectFilesFolder")
+                    des = projectFilesDes;
+                else if(reader.Name == "Folder")
                     des = folderDes;
                 else // (reader.Name == "File")
                     des = fileDes;
@@ -161,6 +164,7 @@ namespace Project
 
         public override void WriteXml(System.Xml.XmlWriter writer)
         {
+            XmlSerializer projectFilesDes = new XmlSerializer(typeof(ProjectFilesFolder));
             XmlSerializer folderDes = new XmlSerializer(typeof(Folder));
             XmlSerializer fileDes = new XmlSerializer(typeof(File));
 
@@ -169,7 +173,9 @@ namespace Project
             writer.WriteStartElement("Contents");
             foreach (Node node in Contents)
             {
-                if (node.GetType() == typeof(Folder))
+                if(node.GetType() == typeof(ProjectFilesFolder))
+                    projectFilesDes.Serialize(writer, node);
+                else if(node.GetType() == typeof(Folder))
                     folderDes.Serialize(writer, node);
                 else if(node.GetType() == typeof(File))
                     fileDes.Serialize(writer, node);

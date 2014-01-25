@@ -29,6 +29,7 @@ namespace Project
 		}
 
         MacroExpander macros = new MacroExpander();
+        bool shouldSave = true;
 
         public MainWindow()
         {
@@ -36,6 +37,7 @@ namespace Project
             Topmost = true;
             Settings load = Settings.Current;
             GlobalCommands = Settings.Current.Commands;
+            shouldSave = !(App.Current as App).Args.Any(a => a.Equals("/nosave"));
             try
             {
                 if((Application.Current as App).Args.Length > 0)
@@ -50,14 +52,15 @@ namespace Project
 
         protected override void OnClosed(EventArgs args)
         {
-            Settings.Save();
+            if(shouldSave)
+                Settings.Save();
             base.OnClosed(args);
         }
 
         private void Open(string file)
         {
             System.IO.Directory.SetCurrentDirectory(System.IO.Path.GetDirectoryName(file));
-            Project = new Current(file);
+            Project = new Current(file, shouldSave);
             Settings.Current.LastProject = file;
             macros.Project = Project;
             //Commands.Clear();

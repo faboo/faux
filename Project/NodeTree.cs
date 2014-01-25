@@ -206,7 +206,9 @@ namespace Project
                         Math.Abs(currentPosition.Y - lastTreeClick.Value.Y) > 10.0)
                     {
                         draggedItem = selectedContainer;
-                        if (draggedItem != null)
+                        if (draggedItem != null
+                            && !(draggedItem.Header is OtherFilesFolder
+                                || draggedItem.Header is ProjectFilesFolder))
                         {
                             DragDropEffects finalDropEffect = DragDrop.DoDragDrop(this, this.SelectedValue,
                                 DragDropEffects.Move);
