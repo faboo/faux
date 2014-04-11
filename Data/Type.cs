@@ -38,7 +38,7 @@ namespace Project
 		public static readonly DependencyProperty PatternProperty = DependencyProperty.Register("Pattern", typeof(string), typeof(Type));
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Type));
 		public static readonly DependencyProperty IconPathProperty = DependencyProperty.Register("IconPath", typeof(string), typeof(Type), new FrameworkPropertyMetadata(OnIconPathChanged));
-		public static readonly DependencyProperty LauncherProperty = DependencyProperty.Register("Launcher", typeof(string), typeof(Type), new FrameworkPropertyMetadata(OnLauncherChanged));
+        public static readonly DependencyProperty LauncherProperty = DependencyProperty.Register("Launcher", typeof(string), typeof(Type), new FrameworkPropertyMetadata(OnLauncherChanged));
 		public static readonly DependencyProperty LauncherArgsProperty = DependencyProperty.Register("LauncherArgs", typeof(string), typeof(Type));
 		private static readonly DependencyPropertyKey IconImagePropertyKey = DependencyProperty.RegisterReadOnly("IconImage", typeof(ImageSource), typeof(Type), new FrameworkPropertyMetadata(null));
 		public static readonly DependencyProperty IconImageProperty = IconImagePropertyKey.DependencyProperty;
@@ -59,7 +59,7 @@ namespace Project
 			get { return (string)GetValue(IconPathProperty); }
 			set { SetValue(IconPathProperty, value); }
 		}
-		public string Launcher
+        public string Launcher
 		{
 			get { return (string)GetValue(LauncherProperty); }
 			set { SetValue(LauncherProperty, value); }
@@ -126,7 +126,7 @@ namespace Project
             BitmapImage ic = new BitmapImage();
 
             ic.BeginInit();
-            ic.UriSource = new Uri(path);
+            ic.UriSource = new Uri(IconCache.Get(path));
 
             ic.EndInit();
 

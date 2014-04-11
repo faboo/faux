@@ -51,8 +51,11 @@
     <Compile Include="BuiltinTypes.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Current.cs" />
+    <Compile Include="ExternalFile.cs" />
+    <Compile Include="ExternalFolder.cs" />
     <Compile Include="File.cs" />
     <Compile Include="Folder.cs" />
+    <Compile Include="IconCache.cs" />
     <Compile Include="MacroExpander.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="ObservableCollectionExtension.cs" />

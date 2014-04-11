@@ -202,5 +202,27 @@ namespace Project
                 folder.Add(child);
             }
         }
+
+        public bool FileInPath(string path) {
+            //Need to add the \ to the end because IsBaseOf is *weird*.
+            Uri project = new Uri(Path.GetDirectoryName(SavePath)+'\\');
+
+            return project.IsBaseOf(new Uri(path));
+            /*
+            return Path.GetDirectoryName(path).StartsWith(
+                Path.GetDirectoryName(SavePath));
+             */
+        }
+
+        public string GetFileSubPath(string path) {
+            if(FileInPath(path)) {
+                int savePathSize = Path.GetDirectoryName(SavePath).Length + 1;
+
+                return path.Substring(savePathSize);
+            }
+            else {
+                return path;
+            }
+        }
     }
 }

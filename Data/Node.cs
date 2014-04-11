@@ -19,6 +19,8 @@ using System.Text;
 using System.Xml.Serialization;
 using System.Windows;
 using System.Diagnostics;
+using System.IO;
+using System.Windows.Media;
 
 namespace Project
 {
@@ -26,6 +28,7 @@ namespace Project
     {
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Node), new FrameworkPropertyMetadata(OnNameChanged));
 		public static readonly DependencyProperty TypeProperty = DependencyProperty.Register("Type", typeof(Type), typeof(Node));
+        //public static readonly DependencyProperty ParentProperty = DependencyProperty.Register("Parent", typeof(Folder), typeof(Node), new FrameworkPropertyMetadata(OnParentChanged));
 
 		public string Name
 		{
@@ -39,7 +42,21 @@ namespace Project
 			set { SetValue(TypeProperty, value); }
 		}
         [XmlIgnore]
-        public Current Project { get; set; }
+        public Current Project { get; private set; }
+        [XmlIgnore]
+        public virtual bool Moveable {
+            get { return true; }
+        }
+        [XmlIgnore]
+        public virtual Folder Parent { get; set; }
+		/*{
+            get { return (Folder)GetValue(ParentProperty); }
+			set { SetValue(ParentProperty, value); }
+		}*/
+        [XmlIgnore]
+        public virtual ImageSource Overlay {
+            get { return null; }
+        }
 
         public System.Xml.Schema.XmlSchema GetSchema()
         {
@@ -81,11 +98,25 @@ namespace Project
         {
         }
 
+        protected virtual void OnParentChanged(DependencyPropertyChangedEventArgs args) {
+            if(args.OldValue != null) {
+                (args.OldValue as Folder).Remove(this);
+            }
+            if(Parent != null) {
+                Parent.Add(this);
+            }
+        }
+
         private static void OnNameChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
             ((Node)sender).OnNameChanged(args);
         }
 
+        private static void OnParentChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args) {
+            // something screws up the dispatching when sending a Contents changes event from Folder
+            //if(args.OldValue != args.NewValue)
+            //    ((Node)sender).OnParentChanged(args);
+        }
 
         protected void Fork(ProcessStartInfo info)
         {
@@ -97,6 +128,44 @@ namespace Project
 
             launcher.Start();
             launcher.Dispose();
+        }
+
+        public static Node FromPath(Current project, string path) {
+            if(project.FileInPath(path)) {
+                if(Directory.Exists(path)) {
+                    return new Folder {
+                        Name = Path.GetFileName(path),
+                        Project = project,
+                    };
+                }
+                else {
+                    return new File {
+                        Name = Path.GetFileName(path),
+                        RealPath = project.GetFileSubPath(path),
+                        Project = project,
+                    };
+                }
+            }
+            else {
+                if(Directory.Exists(path)) {
+                    var folder = new ExternalFolder {
+                        Name = Path.GetFileName(path),
+                        RealPath = path,
+                        Project = project,
+                    };
+
+                    folder.Update();
+
+                    return folder;
+                }
+                else {
+                    return new ExternalFile {
+                        Name = Path.GetFileName(path),
+                        RealPath = path,
+                        Project = project,
+                    };
+                }
+            }
         }
     }
 }

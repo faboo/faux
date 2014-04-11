@@ -33,6 +33,10 @@ namespace Project
 			get { return (ObservableCollection<Node>)GetValue(ContentsProperty); }
 			set { SetValue(ContentsProperty, value); }
 		}
+        [XmlIgnore]
+        public virtual bool ChangeableContents {
+            get { return true; }
+        }
 
         public Folder()
         {
@@ -84,19 +88,25 @@ namespace Project
 
         public virtual void Add(Node node)
         {
-            if (node is OtherFile)
-                node = new File(node as OtherFile);
-            else if (node is OtherFilesFolder)
-                node = new Folder(node as OtherFilesFolder);
+            if(!Contents.Contains(node)) {
+                if(node is OtherFile)
+                    node = new File(node as OtherFile);
+                else if(node is OtherFilesFolder)
+                    node = new Folder(node as OtherFilesFolder);
 
-            AddCore(node);
+                AddCore(node);
+            }
         }
 
         protected void AddCore(Node node)
         {
+            if(node.Parent != null) {
+                node.Parent.Remove(node);
+            }
             node.SetProject(Project);
             node.Changed += OnContentsChanged;
             Contents.InsertSorted(node, CompareNodes);
+            node.Parent = this;
             OnPropertyChanged(new DependencyPropertyChangedEventArgs(
                 ContentsProperty,
                 Contents,
@@ -105,6 +115,7 @@ namespace Project
 
         public void Remove(Node node){
             node.Changed -= OnContentsChanged;
+            node.Parent = null;
             Contents.Remove(node);
             OnPropertyChanged(new DependencyPropertyChangedEventArgs(
                 ContentsProperty,

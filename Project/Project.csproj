@@ -105,6 +105,7 @@
     <Compile Include="IconBrowser.xaml.cs">
       <DependentUpon>IconBrowser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NodeTreeItem.cs" />
     <Compile Include="NotConverter.cs" />
     <Compile Include="Rename.xaml.cs">
       <DependentUpon>Rename.xaml</DependentUpon>
@@ -120,6 +121,7 @@
     <Compile Include="CommandsEditor.xaml.cs">
       <DependentUpon>CommandsEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowsInterop.cs" />
     <Page Include="CommandEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -191,6 +193,7 @@
     <Resource Include="Icons\File.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Icons\shortcut overlay.ico" />
     <Resource Include="Icons\DefaultIcon.ico" />
     <Resource Include="Icons\Project.ico" />
     <Resource Include="Icons\Other Files Folder.ico" />

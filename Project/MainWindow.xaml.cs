@@ -92,10 +92,12 @@ namespace Project
             {
                 string file = ((string[])dropData)[0];
 
-                Settings.Current.LastProject = file;
-                Open(file);
+                if(file.EndsWith(".project")){
+                    Settings.Current.LastProject = file;
+                    Open(file);
 
-                args.Handled = true;
+                    args.Handled = true;
+                }
             }
         }
 
@@ -128,6 +130,7 @@ namespace Project
             args.CanExecute = Project != null;
         }
 
+        // TODO: This should be moved to NodeTreeItem.
         private void ExecuteNew(object sender, ExecutedRoutedEventArgs args)
         {
             Folder container = args.Parameter as Folder;
@@ -137,7 +140,7 @@ namespace Project
 
         private void CanNew(object sender, CanExecuteRoutedEventArgs args)
         {
-            args.CanExecute = Project != null;
+            args.CanExecute = Project != null && args.Parameter is Folder;
         }
 
         private void ExecuteExplore(object sender, ExecutedRoutedEventArgs args)
@@ -147,6 +150,14 @@ namespace Project
 
         private void CanExplore(object sender, CanExecuteRoutedEventArgs args)
         {
+            args.CanExecute = Project != null;
+        }
+
+        private void ExecuteCopyPath(object sender, ExecutedRoutedEventArgs args) {
+            Clipboard.SetData(DataFormats.Text, System.IO.Path.GetDirectoryName(Project.SavePath));
+        }
+
+        private void CanCopyPath(object sender, CanExecuteRoutedEventArgs args) {
             args.CanExecute = Project != null;
         }
 

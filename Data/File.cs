@@ -142,6 +142,12 @@ namespace Project
             });
         }
 
+        public void Rename(string name) {
+            System.IO.File.Move(RealPath, Path.Combine(Path.GetDirectoryName(RealPath), name));
+            RealPath = name;
+            Name = Path.GetFileName(name);
+        }
+
         protected override System.Windows.Freezable CreateInstanceCore()
         {
             return new File();

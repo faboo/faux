@@ -29,6 +29,7 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
     <Window.CommandBindings>
         <CommandBinding Command="Save" Executed="ExecuteSave" CanExecute="CanSave" />
         <CommandBinding Command="Open" Executed="ExecuteExplore" CanExecute="CanExplore" />
+        <CommandBinding Command="Copy" Executed="ExecuteCopyPath" CanExecute="CanCopyPath" />
         <CommandBinding Command="New" Executed="ExecuteNew" CanExecute="CanNew" />
         <CommandBinding Command="src:ProjectCommands.EditTypes" Executed="ExecuteEditTypes" />
         <CommandBinding Command="src:ProjectCommands.EditCommands" Executed="ExecuteEditCommands" />
@@ -50,7 +51,8 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
                 <!--<MenuItem Header="Save Project" Command="Save" />-->
                 <MenuItem Header="Explore Project" Command="Open" />
                 <MenuItem Header="Command Project" Command="src:ProjectCommands.Command" />
-                <MenuItem Header="New Folder" Command="New" CommandParameter="{Binding Project.BaseFolder}" />
+                <MenuItem Header="Copy Project Path" Command="Copy" />
+                <!--<MenuItem Header="New Folder" Command="New" CommandParameter="{Binding Project.BaseFolder}" />-->
                 <MenuItem Header="Edit Types..." Command="src:ProjectCommands.EditTypes" />
                 <MenuItem Header="Edit Commands..." Command="src:ProjectCommands.EditCommands" />
             </MenuItem>
@@ -81,14 +83,17 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
             </MenuItem>
         </Menu>
 
-        <src:NodeTree x:Name="nodeTree" ItemsSource="{Binding Project.BaseFolder.Contents}">
+        <src:NodeTree x:Name="nodeTree" ItemsSource="{Binding Project.BaseFolder.Contents}" Project="{Binding Project}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate
                     DataType="{x:Type data:Folder}"
                     ItemsSource="{Binding Contents}">
                     <Grid>
                         <DockPanel>
+													<Grid DockPanel.Dock="Left">
                             <Image Source="{Binding Type.IconImage}" Height="24" Width="24" DockPanel.Dock="Left" />
+														<Image Source="{Binding Overlay}" Height="16" Width="16" Margin="-3,12,12,-3" />
+													</Grid>
                             <TextBlock Text="{Binding Name}" Margin="4,0" VerticalAlignment="Center" />
                         
                             <DockPanel.ContextMenu>
@@ -104,7 +109,10 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
                 <DataTemplate DataType="{x:Type data:File}">
                     <Grid>
                         <DockPanel>
-                            <Image Source="{Binding Type.IconImage}" Height="24" Width="24" DockPanel.Dock="Left" />
+													<Grid DockPanel.Dock="Left">
+                            <Image Source="{Binding Type.IconImage}" Height="24" Width="24" />
+														<Image Source="{Binding Overlay}" Height="16" Width="16" Margin="-3,12,12,-3" />
+													</Grid>
                             <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
 
                             <DockPanel.ContextMenu>
@@ -113,6 +121,7 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
                                     <MenuItem Header="Start" Command="src:ProjectCommands.Start" CommandParameter="{Binding}" />
                                     <Separator />
                                     <MenuItem Header="Rename" Command="src:ProjectCommands.Rename" />
+																	<MenuItem Header="Properties" Command="src:ProjectCommands.Properties" />
                                 </ContextMenu>
                             </DockPanel.ContextMenu>
                         </DockPanel>

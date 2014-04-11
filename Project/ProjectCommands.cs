@@ -26,6 +26,7 @@ namespace Project
             new InputGestureCollection{
                 new KeyGesture(Key.F2)
             });
+        public static readonly RoutedUICommand Properties = new RoutedUICommand("Properties", "Properties", typeof(ProjectCommands));
         public static readonly RoutedUICommand EditTypes = new RoutedUICommand("Edit Types...", "EditTypes", typeof(ProjectCommands));
         public static readonly RoutedUICommand EditCommands = new RoutedUICommand("Edit Commands...", "EditCommands", typeof(ProjectCommands));
         public static readonly RoutedUICommand Launch = new RoutedUICommand("Launch", "Launch", typeof(ProjectCommands));

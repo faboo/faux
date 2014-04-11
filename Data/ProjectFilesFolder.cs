@@ -22,6 +22,12 @@ using System.Diagnostics;
 
 namespace Project {
     public class ProjectFilesFolder: Folder {
+        public override bool Moveable {
+            get {
+                return false;
+            }
+        }
+
         public ProjectFilesFolder() {
             Type pffType = Settings.Current.Types.FirstOrDefault(t => t.Name == "Project Files Folder");
 
