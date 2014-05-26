@@ -44,7 +44,7 @@ namespace Project
                 TreeViewItem.SelectedEvent,
                 (RoutedEventHandler)((s,a) => selectedContainer = (TreeViewItem)a.OriginalSource),
                 true);
-
+/*
             CommandBindings.Add(new CommandBinding(
                 ProjectCommands.Rename,
                 OnRenameExecuted,
@@ -53,6 +53,7 @@ namespace Project
                 ProjectCommands.Properties,
                 OnPropertiesExecuted,
                 (s, e) => e.CanExecute = SelectedItem != null));
+ */
         }
 
 		public Current Project
@@ -77,6 +78,21 @@ namespace Project
                 return scrollViewer;
             }
         }
+
+        protected override void OnDragOver(DragEventArgs args) {
+            var position = args.GetPosition(this);
+
+            if(position.Y < 12) {
+                ScrollViewer.ScrollToVerticalOffset(ScrollViewer.VerticalOffset - 10);
+            }
+            else if(position.Y > this.ActualHeight - 12) {
+                ScrollViewer.ScrollToVerticalOffset(ScrollViewer.VerticalOffset + 10);
+            }
+            else {
+                base.OnDragOver(args);
+            }
+        }
+
         private void OnRenameExecuted(object sender, ExecutedRoutedEventArgs args)
         {
             Rename rename = selectedContainer.FindVisualChild<Rename>();

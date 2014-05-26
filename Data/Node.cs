@@ -57,6 +57,10 @@ namespace Project
         public virtual ImageSource Overlay {
             get { return null; }
         }
+        [XmlIgnore]
+        public virtual bool ShouldSerialize {
+            get { return true; }
+        }
 
         public System.Xml.Schema.XmlSchema GetSchema()
         {

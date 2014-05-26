@@ -33,6 +33,12 @@ namespace Project
             set { SetValue(RealPathProperty, value); }
         }
 
+        public override bool ShouldSerialize {
+            get {
+                return false;
+            }
+        }
+
         public OtherFile()
         {
             Type = Settings.Current.Types.First(t => t.Name == "Other File");

@@ -140,9 +140,14 @@ namespace Project
                 }
                 else if (reader.Name == "Contents")
                 {
-                    reader.ReadStartElement();
-                    ReadContents(reader);
-                    reader.ReadEndElement();
+                    if(reader.IsEmptyElement) {
+                        reader.Read();
+                    }
+                    else {
+                        reader.ReadStartElement();
+                        ReadContents(reader);
+                        reader.ReadEndElement();
+                    }
                 }
                 else
                 {
@@ -159,6 +164,8 @@ namespace Project
             XmlSerializer projectFilesDes = new XmlSerializer(typeof(ProjectFilesFolder));
             XmlSerializer folderDes = new XmlSerializer(typeof(Folder));
             XmlSerializer fileDes = new XmlSerializer(typeof(File));
+            XmlSerializer externFolderDes = new XmlSerializer(typeof(ExternalFolder));
+            XmlSerializer externFileDes = new XmlSerializer(typeof(ExternalFile));
 
             while (reader.IsStartElement())
             {
@@ -166,8 +173,12 @@ namespace Project
                     des = projectFilesDes;
                 else if(reader.Name == "Folder")
                     des = folderDes;
-                else // (reader.Name == "File")
+                else if(reader.Name == "File")
                     des = fileDes;
+                else if(reader.Name == "ExternalFolder")
+                    des = externFolderDes;
+                else //(reader.Name == "ExternalFile")
+                    des = externFileDes;
 
                 Add((Node)des.Deserialize(reader));
             }
@@ -178,6 +189,8 @@ namespace Project
             XmlSerializer projectFilesDes = new XmlSerializer(typeof(ProjectFilesFolder));
             XmlSerializer folderDes = new XmlSerializer(typeof(Folder));
             XmlSerializer fileDes = new XmlSerializer(typeof(File));
+            XmlSerializer externFolderDes = new XmlSerializer(typeof(ExternalFolder));
+            XmlSerializer externFileDes = new XmlSerializer(typeof(ExternalFile));
 
             writer.WriteElementString("Name", Name);
             
@@ -190,6 +203,10 @@ namespace Project
                     folderDes.Serialize(writer, node);
                 else if(node.GetType() == typeof(File))
                     fileDes.Serialize(writer, node);
+                else if(node is ExternalFolder && node.ShouldSerialize)
+                    externFolderDes.Serialize(writer, node);
+                else if(node is ExternalFile && node.ShouldSerialize)
+                    externFileDes.Serialize(writer, node);
             }
             writer.WriteEndElement();
         }
@@ -210,6 +227,17 @@ namespace Project
                 return 1;
             else
                 return left.Name.CompareTo(right.Name);
+        }
+
+        public bool Contains(Node node) {
+            bool contains = false;
+
+            if(this.Equals(node))
+                contains = true;
+            else if(node != null)
+                contains = Contains(node.Parent);
+
+            return contains;
         }
     }
 }

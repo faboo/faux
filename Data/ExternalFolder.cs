@@ -51,7 +51,36 @@ namespace Project {
                 return false;
             }
         }
+        public override bool ShouldSerialize {
+            get {
+                return !(Parent is ExternalFolder);
+            }
+        }
 
+        public override void ReadXml(System.Xml.XmlReader reader) {
+            reader.ReadStartElement();
+
+            while(reader.IsStartElement()) {
+                if(reader.Name == "Name") {
+                    Name = reader.ReadElementContentAsString();
+                }
+                else if(reader.Name == "RealPath") {
+                    RealPath = reader.ReadElementContentAsString();
+                }
+                else {
+                    reader.Read();
+                }
+            }
+
+            Update();
+
+            reader.Read();
+        }
+
+        public override void WriteXml(System.Xml.XmlWriter writer) {
+            writer.WriteElementString("Name", Name);
+            writer.WriteElementString("RealPath", RealPath);
+        }
 
         public void Update() {
             this.Contents.Clear();

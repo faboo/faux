@@ -32,6 +32,12 @@ namespace Project
             set { SetValue(RealPathProperty, value); }
         }
 
+        public override bool ShouldSerialize {
+            get {
+                return false;
+            }
+        }
+
         public OtherFilesFolder()
         {
             Type offType = Settings.Current.Types.FirstOrDefault(t => t.Name == "Other Files Folder");

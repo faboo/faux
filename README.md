@@ -1,4 +1,5 @@
-=== About ===
+About
+=====
 
 Faux is a project manager, but not of the usual sort. In Faux, you manage the
 files of a single project at a time. You can think of it like the Workspace pane
@@ -17,7 +18,8 @@ menue "Edit Types". In the Types Editor, new file types can be created to change
 the program that is launched by default for that type.
 
 
-=== Building ===
+Building
+--------
 
 You will need Visual Studio 2010 to build Faux. I use the Express version, but
 any of the versions with C# support should work fine.
@@ -26,7 +28,8 @@ There is no installer at the moment, so you will need to copy the contents of
 the Project\bin\Release directory to an appropriate place.
 
 
-=== Running ===
+Running
+-------
 
 I recommend setting Faux as the default program for .project files, but you can
 also start Faux from Explorer or the Start Menu and drag a project file into it.
@@ -36,17 +39,27 @@ new project, simply create a new, empty file, and open it in Faux. Faux will
 take care of the rest.
 
 
-=== Other Files ===
+Project Files and Other Files
+-----------------------------
 
-Every project (even empty ones) have a folder called "Other Files". This folder
-contains all of the files not currently in other faux folders. Other files or
-sub-folders can be moved to a faux folder by dragging them around the file tree.
+Every project (even empty ones) has two folders called "Project Files and "Other
+Files".
+
+The Project Files folder contains all the files and faux folders you've added to
+your project.
+
+The Other Files folder contains all of the files not currently in other faux
+folders. Other files or sub-folders can be moved to a faux folder (such as the
+Project Files folder) by dragging them around the file tree.
 
 Files moved into the Other Files folder will be forgotten, and no longer managed
 as part of the project.
 
+Additionally, files may be dragged into Faux directly from Explorer.
 
-=== Types ===
+
+Types
+-----
 
 Types created in the Types Editor have attributes: their Name, defining Pattern,
 associated Launcher program, the Arguments to the launcher, and an Alternate
@@ -70,7 +83,8 @@ files of this type. If left unset, the default is used (usually the launcher's
 icon).
 
 
-=== Planned Features ===
+Planned Features
+----------------
 
 * Multi-select in the file tree
 

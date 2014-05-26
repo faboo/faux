@@ -30,7 +30,7 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
         <CommandBinding Command="Save" Executed="ExecuteSave" CanExecute="CanSave" />
         <CommandBinding Command="Open" Executed="ExecuteExplore" CanExecute="CanExplore" />
         <CommandBinding Command="Copy" Executed="ExecuteCopyPath" CanExecute="CanCopyPath" />
-        <CommandBinding Command="New" Executed="ExecuteNew" CanExecute="CanNew" />
+        <!--<CommandBinding Command="New" Executed="ExecuteNew" CanExecute="CanNew" />-->
         <CommandBinding Command="src:ProjectCommands.EditTypes" Executed="ExecuteEditTypes" />
         <CommandBinding Command="src:ProjectCommands.EditCommands" Executed="ExecuteEditCommands" />
         <CommandBinding Command="src:ProjectCommands.Launch" Executed="ExecuteLaunch" />
@@ -106,6 +106,46 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
                         <src:Rename DataContext="{Binding}" Visibility="Hidden" HorizontalAlignment="Stretch" />
                     </Grid>
                 </HierarchicalDataTemplate>
+                  <HierarchicalDataTemplate
+                    DataType="{x:Type data:OtherFilesFolder}"
+                    ItemsSource="{Binding Contents}">
+                    <Grid>
+                        <DockPanel>
+                            <Image Source="{Binding Type.IconImage}" Height="24" Width="24" DockPanel.Dock="Left" />
+                            <TextBlock Text="{Binding Name}" Margin="4,0" VerticalAlignment="Center" />
+
+                            <DockPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Refresh" Command="src:ProjectCommands.Refresh" CommandParameter="{Binding}" />
+                                    <MenuItem Header="Start" Command="src:ProjectCommands.Start" CommandParameter="{Binding}" />
+                                </ContextMenu>
+                            </DockPanel.ContextMenu>
+                        </DockPanel>
+                        <src:Rename DataContext="{Binding}" Visibility="Hidden" HorizontalAlignment="Stretch" />
+                    </Grid>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate
+                    DataType="{x:Type data:ExternalFolder}"
+                    ItemsSource="{Binding Contents}">
+                    <Grid>
+                        <DockPanel>
+													<Grid DockPanel.Dock="Left">
+                            <Image Source="{Binding Type.IconImage}" Height="24" Width="24" DockPanel.Dock="Left" />
+														<Image Source="{Binding Overlay}" Height="16" Width="16" Margin="-3,12,12,-3" />
+													</Grid>
+                            <TextBlock Text="{Binding Name}" Margin="4,0" VerticalAlignment="Center" />
+                        
+                            <DockPanel.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Rename" Command="src:ProjectCommands.Rename" CommandParameter="{Binding}" />
+                                    <MenuItem Header="Refresh" Command="src:ProjectCommands.Refresh" CommandParameter="{Binding}" />
+                                    <MenuItem Header="Start" Command="src:ProjectCommands.Start" CommandParameter="{Binding}" />
+                                </ContextMenu>
+                            </DockPanel.ContextMenu>
+                        </DockPanel>
+                        <src:Rename DataContext="{Binding}" Visibility="Hidden" HorizontalAlignment="Stretch" />
+                    </Grid>
+                </HierarchicalDataTemplate>
                 <DataTemplate DataType="{x:Type data:File}">
                     <Grid>
                         <DockPanel>
@@ -140,24 +180,6 @@ Street, Fifth Floor, Boston, MA  02110-1301, USA.
                         </DockPanel.ContextMenu>
                     </DockPanel>
                 </DataTemplate>
-                <HierarchicalDataTemplate
-                    DataType="{x:Type data:OtherFilesFolder}"
-                    ItemsSource="{Binding Contents}">
-                    <Grid>
-                        <DockPanel>
-                            <Image Source="{Binding Type.IconImage}" Height="24" Width="24" DockPanel.Dock="Left" />
-                            <TextBlock Text="{Binding Name}" Margin="4,0" VerticalAlignment="Center" />
-
-                            <DockPanel.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Refresh" Command="src:ProjectCommands.Refresh" CommandParameter="{Binding}" />
-                                    <MenuItem Header="Start" Command="src:ProjectCommands.Start" CommandParameter="{Binding}" />
-                                </ContextMenu>
-                            </DockPanel.ContextMenu>
-                        </DockPanel>
-                        <src:Rename DataContext="{Binding}" Visibility="Hidden" HorizontalAlignment="Stretch" />
-                    </Grid>
-                </HierarchicalDataTemplate>
             </TreeView.Resources>
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">

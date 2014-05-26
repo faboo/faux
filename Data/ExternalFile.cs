@@ -44,5 +44,10 @@ namespace Project {
                 base.Parent = value;
             }
         }
+        public override bool ShouldSerialize {
+            get {
+                return !(Parent is ExternalFolder);
+            }
+        }
     }
 }

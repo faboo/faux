@@ -19,25 +19,65 @@ namespace Project {
 
         public NodeTreeItem() {
             AllowDrop = true;
+
+            CommandBindings.Add(new CommandBinding(
+                ProjectCommands.Rename,
+                ExecuteRename));
+            CommandBindings.Add(new CommandBinding(
+                ProjectCommands.Properties,
+                ExecuteProperties));
+            CommandBindings.Add(new CommandBinding(
+                ApplicationCommands.New,
+                ExecuteNew));
+        }
+
+        private Node DragDataAsNode(IDataObject data) {
+            return data.GetData("Project.File") as Node
+                ?? data.GetData("Project.Folder") as Node
+                ?? data.GetData("Project.OtherFile") as Node
+                ?? data.GetData("Project.OtherFilesFolder") as Node
+                ?? data.GetData("Project.ExternalFile") as Node
+                ?? data.GetData("Project.ExternalFolder") as Node;
+        }
+        
+        private void ExecuteRename(object sender, ExecutedRoutedEventArgs args)
+        {
+            Rename rename = this.FindVisualChild<Rename>();
+
+            if (rename != null)
+                rename.Show();
+        }
+
+        private void ExecuteProperties(object sender, ExecutedRoutedEventArgs args) {
+            File file = DataContext as File;
+            WindowsInterop.ShowFileProperties(file.RealPath);
+        }
+
+        private void ExecuteNew(object sender, ExecutedRoutedEventArgs args) {
+            Folder container = args.Parameter as Folder;
+
+            container.Add(new Folder() { Name = "New Folder" });
+        }
+
+        private void CanNew(object sender, CanExecuteRoutedEventArgs args) {
+            args.CanExecute = DataContext is Folder;
         }
 
         protected override void OnDragOver(DragEventArgs args) {
-            if(Node is Folder) {
-                if(args.Data.GetDataPresent("Project.File")) {
-                    args.Effects = DragDropEffects.Move;
-                    args.Handled = true;
-                }
-                else if(args.Data.GetDataPresent("Project.Folder")) {
-                    args.Effects = DragDropEffects.Move;
-                    args.Handled = true;
-                }
-                else if(args.Data.GetDataPresent("Project.OtherFile")) {
-                    args.Effects = DragDropEffects.Link;
-                    args.Handled = true;
-                }
-                else if(args.Data.GetDataPresent("Project.OtherFilesFolder")) {
-                    args.Effects = DragDropEffects.Link;
-                    args.Handled = true;
+            if(Node is Folder && (Node as Folder).ChangeableContents) {
+                Node dragging = DragDataAsNode(args.Data);
+
+                if(dragging != null && dragging.Moveable &&
+                    (!(dragging is Folder) || !(dragging as Folder).Contains(Node))) {
+
+                    if(dragging is File || dragging is Folder) {
+                        args.Effects = DragDropEffects.Move;
+                        args.Handled = true;
+                    }
+                    else if(dragging is OtherFilesFolder || dragging is OtherFile) {
+                        args.Effects = DragDropEffects.Link;
+                        args.Handled = true;
+                    }
                 }
                 else if(args.Data.GetDataPresent(DataFormats.FileDrop)
                     && !((string[])args.Data.GetData(DataFormats.FileDrop, true))[0]
@@ -46,54 +86,22 @@ namespace Project {
                     args.Effects = DragDropEffects.Link;
                     args.Handled = true;
                 }
-                else {
-                    base.OnDragEnter(args);
-                }
             }
-            else {
+
+            if(!args.Handled)
                 base.OnDragEnter(args);
-            }
         }
 
         protected override void OnDrop(DragEventArgs args) {
-            if(Node is Folder) {
-                Node node = args.Data.GetData("Project.File") as Node
-                    ?? args.Data.GetData("Project.Folder") as Node
-                    ?? args.Data.GetData("Project.OtherFile") as Node
-                    ?? args.Data.GetData("Project.OtherFilesFolder") as Node
-                    ?? args.Data.GetData("Project.ExternalFile") as Node
-                    ?? args.Data.GetData("Project.ExternalFolder") as Node;
+            if(Node is Folder && (this.Node as Folder).ChangeableContents) {
+                Node dragging = DragDataAsNode(args.Data);
 
-                if(node != null && node.Moveable && (this.Node as Folder).ChangeableContents) {
-                    (this.Node as Folder).Add(node);
+                if(dragging != null && dragging.Moveable &&
+                    (!(dragging is Folder) || !(dragging as Folder).Contains(Node))) {
+                    
+                    (this.Node as Folder).Add(dragging);
                     args.Handled = true;
                 }
-                /*if(args.Data.GetDataPresent("Project.File")) {
-                    File node = (File)args.Data.GetData("Project.File");
-
-                    (this.Node as Folder).Add(node);
-                    args.Handled = true;
-                }
-                else if(args.Data.GetDataPresent("Project.Folder")) {
-                    Folder node = (Folder)args.Data.GetData("Project.Folder");
-
-                    (this.Node as Folder).Add(node);
-                    args.Handled = true;
-                }
-                else if(args.Data.GetDataPresent("Project.OtherFile")) {
-                    OtherFile node = (OtherFile)args.Data.GetData("Project.OtherFile");
-
-                    node.Parent.Remove(node);
-                    (this.Node as Folder).Add(node);
-                    args.Handled = true;
-                }
-                else if(args.Data.GetDataPresent("Project.OtherFilesFolder")) {
-                    OtherFilesFolder node = (OtherFilesFolder)args.Data.GetData("Project.OtherFilesFolder");
-
-                    node.Parent.Remove(node);
-                    (this.Node as Folder).Add(node);
-                    args.Handled = true;
-                }*/
                 else if(args.Data.GetDataPresent(DataFormats.FileDrop)
                     && !(args.Data.GetData(DataFormats.FileDrop, true) as string[]).
                         All(f =>
@@ -106,13 +114,10 @@ namespace Project {
 
                     args.Handled = true;
                 }
-                else {
-                    base.OnDrop(args);
-                }
             }
-            else {
+
+            if(!args.Handled)
                 base.OnDrop(args);
-            }
         }
 
         protected override void OnMouseMove(MouseEventArgs args) {
